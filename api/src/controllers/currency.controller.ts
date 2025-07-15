@@ -8,8 +8,10 @@ let conversions: Conversion[] = [];
 export const getCurrencies = async (req: Request, res: Response) => {
   try {
     const response = await httpClient.get(`/currencies`);
+    console.log('res', response.data.data);
     res.json(response.data.data);
   } catch (error) {
+    console.log(error);
     res.status(500).json({ error: 'Failed to fetch currencies' });
   }
 };
