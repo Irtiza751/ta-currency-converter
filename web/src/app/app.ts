@@ -1,9 +1,10 @@
 import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { CurrencyConverter } from './components/currency-converter/currency-converter';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, CurrencyConverter],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })
