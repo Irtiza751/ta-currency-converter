@@ -8,7 +8,7 @@ let conversions: Conversion[] = [];
 export const getCurrencies = async (req: Request, res: Response) => {
   try {
     const response = await httpClient.get(`/currencies`);
-    console.log('res', response.data.data);
+    // console.log('res', response.data.data);
     res.json(response.data.data);
   } catch (error) {
     console.log(error);
@@ -19,16 +19,17 @@ export const getCurrencies = async (req: Request, res: Response) => {
 export const convertCurrency = async (req: Request, res: Response) => {
   const { from, to, amount } = req.body;
   try {
-    const response = await httpClient.get('/latest', {
-        params: {
-            base_currency: from,
-            currencies: to,
-        }
+    const response = await httpClient.get<{ data: Record<string, number> }>('/latest', {
+      params: {
+        base_currency: from,
+        currencies: to,
+      }
     });
-    
+
+    console.log('convert: ', response.data);
     const rate = response.data.data[to];
     const result = amount * rate;
-    
+
     const conversion: Conversion = {
       id: uuidv4(),
       fromCurrency: from,
@@ -37,7 +38,7 @@ export const convertCurrency = async (req: Request, res: Response) => {
       result,
       date: new Date().toISOString()
     };
-    
+
     conversions.push(conversion);
     res.json({ result, conversion });
   } catch (error) {
