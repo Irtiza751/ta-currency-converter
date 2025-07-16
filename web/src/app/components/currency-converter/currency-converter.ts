@@ -44,6 +44,9 @@ export class CurrencyConverter implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.converterForm.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => this.result = 0)
     this.currencyService.getCurrencies()
       .pipe(takeUntil(this.destroy$))
       .subscribe(data => {
@@ -59,7 +62,7 @@ export class CurrencyConverter implements OnInit, OnDestroy {
   convert() {
     this.isLoading = true;
     const { fromCurrency, toCurrency, amount } = this.converterForm.value;
-    
+
     this.currencyService.convertCurrency(fromCurrency, toCurrency, amount)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
