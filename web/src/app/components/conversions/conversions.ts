@@ -17,10 +17,13 @@ export class Conversions implements OnInit, OnDestroy {
   dataSource: IConversion[] = [];
   columns = ['id', 'fromCurrency', 'toCurrency', 'amount', 'result', 'date'];
 
-  constructor(private currencyService: CurrencyService) {}
+  constructor(private currencyService: CurrencyService) { }
 
   ngOnInit(): void {
     this.getConversions();
+    this.currencyService.conversionAdded
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => this.getConversions())
   }
 
   ngOnDestroy(): void {

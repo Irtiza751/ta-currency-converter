@@ -47,6 +47,7 @@ export class CurrencyConverter implements OnInit, OnDestroy {
     this.converterForm.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => this.result = 0)
+      
     this.currencyService.getCurrencies()
       .pipe(takeUntil(this.destroy$))
       .subscribe(data => {

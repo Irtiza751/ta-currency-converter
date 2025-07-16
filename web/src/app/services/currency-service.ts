@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable, tap, catchError, throwError, Subject, ReplaySubject } from 'rxjs';
+import { Observable, tap, catchError, throwError, Subject } from 'rxjs';
 import { IConversion } from '../interfaces/conversion';
+import { Convert } from '../interfaces/convert';
 
 @Injectable({ providedIn: 'root' })
 export class CurrencyService {
   private apiUrl = 'http://localhost:3000/api';
-  conversionAdded = new ReplaySubject<void>(1);
+  conversionAdded = new Subject<Convert>();
 
   constructor(private http: HttpClient) {}
 
@@ -15,10 +16,10 @@ export class CurrencyService {
   }
 
   convertCurrency(from: string, to: string, amount: number): Observable<any> {
-    return this.http.post(`${this.apiUrl}/convert`, { from, to, amount }).pipe(
+    return this.http.post<Convert>(`${this.apiUrl}/convert`, { from, to, amount }).pipe(
       tap((res) => {
         console.log('API response:', res); // Debug
-        this.conversionAdded.next();
+        this.conversionAdded.next(res);
       }),
       catchError((error) => {
         console.error('API error:', error); // Debug
