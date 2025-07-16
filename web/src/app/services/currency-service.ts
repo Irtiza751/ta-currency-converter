@@ -7,7 +7,7 @@ import { Convert } from '../interfaces/convert';
 @Injectable({ providedIn: 'root' })
 export class CurrencyService {
   private apiUrl = 'http://localhost:3000/api';
-  conversionAdded = new Subject<Convert>();
+  conversionAdded = new Subject<void>();
 
   constructor(private http: HttpClient) {}
 
@@ -19,7 +19,7 @@ export class CurrencyService {
     return this.http.post<Convert>(`${this.apiUrl}/convert`, { from, to, amount }).pipe(
       tap((res) => {
         console.log('API response:', res); // Debug
-        this.conversionAdded.next(res);
+        this.conversionAdded.next();
       }),
       catchError((error) => {
         console.error('API error:', error); // Debug

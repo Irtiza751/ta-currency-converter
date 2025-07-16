@@ -21,7 +21,6 @@ import { Subject, takeUntil } from 'rxjs';
     MatButtonModule,
     MatCardModule
   ],
-  providers: [CurrencyService],
   templateUrl: './currency-converter.html',
   styleUrls: ['./currency-converter.scss']
 })
@@ -47,7 +46,7 @@ export class CurrencyConverter implements OnInit, OnDestroy {
     this.converterForm.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => this.result = 0)
-      
+
     this.currencyService.getCurrencies()
       .pipe(takeUntil(this.destroy$))
       .subscribe(data => {
