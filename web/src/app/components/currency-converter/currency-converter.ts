@@ -1,26 +1,24 @@
-import { Component, OnDestroy, OnInit, signal } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormGroup, FormBuilder } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
-import { CurrencyService } from '../../services/currency-service';
-import { LoadingDirective } from '../../directives/loading-directive';
-import { Subject, takeUntil } from 'rxjs';
 import { MatCardModule } from '@angular/material/card';
+import { CurrencyService } from '../../services/currency-service';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-currency-converter',
   standalone: true,
   imports: [
     CommonModule,
-    FormsModule,
+    ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
     MatButtonModule,
-    // LoadingDirective,
     MatCardModule
   ],
   providers: [CurrencyService],
@@ -28,21 +26,28 @@ import { MatCardModule } from '@angular/material/card';
   styleUrls: ['./currency-converter.scss']
 })
 export class CurrencyConverter implements OnInit, OnDestroy {
-  currencies = signal<string[]>([]);
-  fromCurrency = signal('USD');
-  toCurrency = signal('EUR');
-  amount = signal(1);
-  result = signal(0);
-  isLoading = signal(false);
-  private destroy$ = new Subject<void>()
+  currencies: string[] = [];
+  converterForm: FormGroup;
+  result = 0;
+  isLoading = false;
+  private destroy$ = new Subject<void>();
 
-  constructor(private currencyService: CurrencyService) { }
+  constructor(
+    private currencyService: CurrencyService,
+    private fb: FormBuilder
+  ) {
+    this.converterForm = this.fb.group({
+      amount: [1],
+      fromCurrency: ['USD'],
+      toCurrency: ['EUR']
+    });
+  }
 
   ngOnInit() {
     this.currencyService.getCurrencies()
       .pipe(takeUntil(this.destroy$))
       .subscribe(data => {
-        this.currencies.set(Object.keys(data));
+        this.currencies = Object.keys(data);
       });
   }
 
@@ -52,20 +57,18 @@ export class CurrencyConverter implements OnInit, OnDestroy {
   }
 
   convert() {
-    this.isLoading.set(true);
-    this.currencyService.convertCurrency(
-      this.fromCurrency(),
-      this.toCurrency(),
-      this.amount()
-    )
+    this.isLoading = true;
+    const { fromCurrency, toCurrency, amount } = this.converterForm.value;
+    
+    this.currencyService.convertCurrency(fromCurrency, toCurrency, amount)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (data) => {
-          this.result.set(data.result);
-          this.isLoading.set(false);
+          this.result = data.result;
+          this.isLoading = false;
         },
         error: () => {
-          this.isLoading.set(false);
+          this.isLoading = false;
         }
       });
   }

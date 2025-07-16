@@ -20,13 +20,12 @@ export class Conversions implements OnInit, OnDestroy {
   constructor(private currencyService: CurrencyService) {}
 
   ngOnInit(): void {
-    this.getConversions(); // Fetch initial conversions
     this.currencyService.conversionAdded
       .pipe(
         takeUntil(this.destroy$),
         tap(res => console.log('Conversion added:', res)),
       )
-      .subscribe(() => this.getConversions());
+      .subscribe(res => console.log('res', res));
   }
 
   ngOnDestroy(): void {
