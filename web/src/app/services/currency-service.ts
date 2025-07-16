@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, Subject } from 'rxjs';
-import { Conversion } from '../interfaces/conversion';
+import { IConversion } from '../interfaces/conversion';
 
 @Injectable({ providedIn: 'root' })
 export class CurrencyService {
@@ -28,7 +28,7 @@ export class CurrencyService {
     });
   }
 
-  getConversions(): Observable<Conversion[]> {
-    return this.http.get<Conversion[]>(`${this.apiUrl}/conversions`);
+  getConversions(): Observable<IConversion[]> {
+    return this.http.get<IConversion[]>(`${this.apiUrl}/conversions`);
   }
 }

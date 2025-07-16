@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { v4 as uuidv4 } from 'uuid';
+// import { v4 as uuidv4 } from 'uuid';
 import { Conversion } from '../interfaces/conversion';
 import { httpClient } from '../configs/http-client';
 
@@ -31,7 +31,7 @@ export const convertCurrency = async (req: Request, res: Response) => {
     const result = amount * rate;
 
     const conversion: Conversion = {
-      id: uuidv4(),
+      id: String(conversions.length + 1),
       fromCurrency: from,
       toCurrency: to,
       amount,

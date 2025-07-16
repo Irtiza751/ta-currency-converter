@@ -1,4 +1,4 @@
-export interface Conversion {
+export interface IConversion {
   id: string;
   fromCurrency: string;
   toCurrency: string;
